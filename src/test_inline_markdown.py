@@ -1,5 +1,5 @@
 import unittest
-from inline_markdown import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_image, split_nodes_link
+from inline_markdown import split_nodes_delimiter, extract_markdown_images, extract_markdown_links, split_nodes_image, split_nodes_link, text_to_textnodes
 from textnode import TextNode, TextType
 
 class TestInlineMarkdown(unittest.TestCase):
@@ -146,4 +146,34 @@ class TestInlineMarkdown(unittest.TestCase):
             ],
             new_nodes
         )
-        
+    
+    def test_text_to_nodes_multiple_text_types(self):
+        new_nodes = text_to_textnodes("This is text with a [link](www.google.com) and an ![image](www.canislupis.com/rottweiler.jpeg)")
+        self.assertEqual(
+            [
+                TextNode("This is text with a ", TextType.TEXT),
+                TextNode("link", TextType.LINK, "www.google.com"),
+                TextNode(" and an ", TextType.TEXT),
+                TextNode("image", TextType.IMAGE, "www.canislupis.com/rottweiler.jpeg"),
+            ],
+            new_nodes
+        )
+
+    def test_text_only_one_bold_word(self):
+        new_nodes = text_to_textnodes("**antidistablishmentarianism**")
+        self.assertEqual(
+            [
+                TextNode("antidistablishmentarianism", TextType.BOLD),
+            ],
+            new_nodes
+        )
+
+    def test_image_without_text(self):
+        new_nodes = text_to_textnodes("![](www.notexttothisIMAGE.jpeg)")
+        self.assertEqual(
+            [
+                TextNode("",TextType.IMAGE, "www.notexttothisIMAGE.jpeg"),
+            ],
+            new_nodes
+        )
+    
