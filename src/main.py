@@ -1,12 +1,12 @@
-from textnode import TextNode, TextType
 from copystatic import copy_files_recursive
-from gencontent import generate_page, extract_title
+from gencontent import generate_pages_recursive
+import os
+import shutil
 
 def main():
-    textnode = TextNode("title", TextType.BOLD, "https:idk.com")
-    print(textnode)
-
+    if os.path.exists("./public"):
+        shutil.rmtree("./public")
     copy_files_recursive("./static", "./public")
-    generate_page("content/index.md", "template.html", "public/index.html")
+    generate_pages_recursive("./content", "./template.html", "./public")
 
 main()
